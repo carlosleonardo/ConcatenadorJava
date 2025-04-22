@@ -1,5 +1,6 @@
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import java.io.*;
@@ -10,7 +11,9 @@ public class Concatenador {
         Options options = new Options();
         options.addOption("d", true, "Arquivo de destino");
         options.addOption("h", false, "Ajuda");
-        options.addOption("o", true, "Arquivos de origem");
+        var opcaoOrigem = new Option("o", "origem", true, "Arquivos de origem");
+        opcaoOrigem.setArgs(Option.UNLIMITED_VALUES);
+        options.addOption(opcaoOrigem);
 
         var analisador = new DefaultParser();
         try {
@@ -31,18 +34,18 @@ public class Concatenador {
                 return;
             }
             // Extrai os argumentos informados
+            System.out.println("Concatenando arquivos...");
             concatenaArquivos(cmd.getOptionValue("d"), cmd.getOptionValues("o"));
         } catch (Exception e) {
             System.out.println("Erro ao processar os argumentos: " + e.getMessage());
-            return;
+            
         }
 
-        System.out.println("Concatenando arquivos...");
 
     }
 
     private static void concatenaArquivos(String destino, String[] origem) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(destino))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(destino, true))) {
             for (String arquivo : origem) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
                     String linha;
