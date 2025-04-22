@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Concatenador:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Concatenador_jar</output-path>
+    <root id="archive" name="Concatenador.jar">
+      <element id="module-output" name="Concatenador" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/commons-cli-1.9.0-bin/commons-cli-1.9.0/commons-cli-1.9.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

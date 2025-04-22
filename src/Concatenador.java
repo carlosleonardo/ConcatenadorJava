@@ -7,7 +7,7 @@ import java.io.*;
 
 public class Concatenador {
     public static void main(String[] args) {
-        // Exobe ps ár}a,etrps se m]ap fpr omfpr,adp éçp ,emps dois arquivos
+
         Options options = new Options();
         options.addOption("d", true, "Arquivo de destino");
         options.addOption("h", false, "Ajuda");
