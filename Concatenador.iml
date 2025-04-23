@@ -10,7 +10,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/commons-cli-1.9.0-bin/commons-cli-1.9.0/commons-cli-1.9.0.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/commons-cli-1.9.0/commons-cli-1.9.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
