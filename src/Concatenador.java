@@ -2,7 +2,6 @@ import org.apache.commons.cli.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,7 +61,7 @@ public class Concatenador {
         CommandLine cmd = analisador.parse(options, args);
         if (cmd.hasOption("h") || args.length == 0) {
             System.out.println("Ajuda");
-            System.out.println("Uso: java Concatenador -d <arquivo de destino> -o <arquivos de origem> -h");
+            System.out.println("Uso: java -jar Concatenador -d <arquivo de destino> -o <arquivos de origem> -h");
             return null;
         }
         // Verifica se o arquivo de destino foi informado
