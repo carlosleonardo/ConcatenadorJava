@@ -1,6 +1,11 @@
 import org.apache.commons.cli.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Concatenador {
     public static void main(String[] args) {
@@ -42,13 +47,12 @@ public class Concatenador {
                 }
             }
 
-
             // Extrai os argumentos informados
             System.out.println("Concatenando arquivos...");
             concatenaArquivos(cmd.getOptionValue("d"), cmd.getOptionValues("o"));
         } catch (Exception e) {
             System.out.println("Erro ao processar os argumentos: " + e.getMessage());
-            
+
         }
 
 
@@ -75,8 +79,11 @@ public class Concatenador {
     }
 
     private static void concatenaArquivos(String destino, String[] origem) {
+        // Extrai arquivos de origem baseado numa mascara
+        var arquivosOrigem = preprocessarPorMascara(origem);
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(destino, true))) {
-            for (String arquivo : origem) {
+            for (String arquivo : arquivosOrigem) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
                     String linha;
                     while ((linha = reader.readLine()) != null) {
@@ -90,6 +97,59 @@ public class Concatenador {
         } catch (IOException e) {
             System.out.println("Erro ao escrever no arquivo " + destino + ": " + e.getMessage());
         }
+    }
+
+    private static List<String> preprocessarPorMascara(String[] origem) {
+        var arquivosSaida = new ArrayList<String>();
+        
+        for (String caminhoArquivo : origem) {
+            // Verifica se o caminho contém caracteres coringa (* ou ?)
+            if (caminhoArquivo.contains("*") || caminhoArquivo.contains("?")) {
+                try {
+                    // Separar o diretório e o padrão de arquivo
+                    File file = new File(caminhoArquivo);
+                    String diretorio = file.getParent();
+                    String padrao = file.getName();
+                    
+                    // Se não houver diretório especificado, usar o diretório atual
+                    if (diretorio == null) {
+                        diretorio = ".";
+                    }
+                    
+                    // Converter caracteres coringa para regex
+                    String regex = padrao
+                            .replace(".", "\\.")
+                            .replace("*", ".*")
+                            .replace("?", ".");
+                    
+                    Pattern pattern = Pattern.compile(regex);
+                    
+                    // Listar todos os arquivos no diretório
+                    File dir = new File(diretorio);
+                    File[] arquivos = dir.listFiles();
+                    
+                    if (arquivos != null) {
+                        for (File arquivo : arquivos) {
+                            if (!arquivo.isDirectory()) {
+                                Matcher matcher = pattern.matcher(arquivo.getName());
+                                if (matcher.matches()) {
+                                    arquivosSaida.add(arquivo.getAbsolutePath());
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Erro ao processar padrão de arquivo " + caminhoArquivo + ": " + e.getMessage());
+                    // Em caso de erro, adiciona o arquivo original como fallback
+                    arquivosSaida.add(caminhoArquivo);
+                }
+            } else {
+                // Se não for uma máscara, adicionar o arquivo diretamente
+                arquivosSaida.add(caminhoArquivo);
+            }
+        }
+
+        return arquivosSaida;
     }
 
 }
