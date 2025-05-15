@@ -2,11 +2,15 @@ import org.apache.commons.cli.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Concatenador {
+
+    private static final int TAMANHO_MAXIMO = 8192;
+
     public static void main(String[] args) {
 
         Options options = new Options();
@@ -18,6 +22,15 @@ public class Concatenador {
 
         var analisador = new DefaultParser();
         try {
+            // Verifica se os comandos estão dentro do limite da linha de comando
+            int tamanho = 0;
+            for (String arg : args) {
+                tamanho += arg.length();
+            }
+            if (tamanho > TAMANHO_MAXIMO) {
+                System.out.println("O tamanho máximo da linha de comando foi excedido.");
+                return;
+            }
             CommandLine cmd = obterLinhaComando(args, analisador, options);
             if (cmd == null) return;
 
@@ -58,6 +71,7 @@ public class Concatenador {
     }
 
     private static CommandLine obterLinhaComando(String[] args, DefaultParser analisador, Options options) throws ParseException {
+
         CommandLine cmd = analisador.parse(options, args);
         if (cmd.hasOption("h") || args.length == 0) {
             System.out.println("Ajuda");
